@@ -9,6 +9,7 @@ type User {
 }
 
 type Post {
+  _id: ID
   title: String!
   imageUrl: String!
   categories: [String]!
@@ -27,7 +28,8 @@ type Message {
 }
 
 type Query {
-  getPosts: [Post]
+  getPosts: [Post],
+  getUsers: [User]
 }
 
 type Mutation {

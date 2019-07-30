@@ -8,6 +8,14 @@ module.exports = {
           model: "User"
         });
       return posts;
+    },
+    getUsers: async (_, args, { User }) => {
+      const users = await User.find({})
+        .sort({ createdDate: "desc" })
+        .populate({
+          path: "createdBy"
+        });
+      return users;
     }
   },
   Mutation: {
