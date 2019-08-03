@@ -17,84 +17,91 @@
           <v-list-item-icon>
             <v-icon>{{item.icon}}</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
-            {{item.title}}
-          </v-list-item-content>
+          <v-list-item-content>{{item.title}}</v-list-item-content>
         </v-list-item>
 
         <!-- Signout Button -->
-        <v-list-item v-if="user"  @click="handleSignoutUser">
+        <v-list-item v-if="user" @click="handleSignoutUser">
           <v-list-item-icon>
             <v-icon>exit_to_app</v-icon>
           </v-list-item-icon>
           <v-list-item-content>Signout</v-list-item-content>
         </v-list-item>
-
       </v-list>
     </v-navigation-drawer>
 
     <!-- Horizontal Navbar -->
-    <v-toolbar fixed color="primary" dark>
-      <!-- App Title -->
-      <v-app-bar-nav-icon @click="toggleSideNav"></v-app-bar-nav-icon>
-      <v-toolbar-title class="hidden-xs-only">
-        <router-link to="/" tag="span" style="cursor: pointer">
-          VueShare
-        </router-link>
-      </v-toolbar-title>
+    <v-card>
+      <v-toolbar fixed color="primary" dark>
+        <!-- App Title -->
+        <v-app-bar-nav-icon @click="toggleSideNav"></v-app-bar-nav-icon>
+        <v-toolbar-title class="hidden-xs-only">
+          <router-link to="/" tag="span" style="cursor: pointer">VueShare</router-link>
+        </v-toolbar-title>
 
-      <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
-      <!-- Search Input -->
-      <v-text-field flex prepend-icon="search" placeholder="Search posts" color="accent" single-line hide-details></v-text-field>
+        <!-- Search Input -->
+        <v-text-field
+          flex
+          prepend-icon="search"
+          placeholder="Search posts"
+          color="accent"
+          single-line
+          hide-details
+        ></v-text-field>
 
-      <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
-      <!-- Horizontal Navbar Links -->
-      <v-toolbar-items class="hidden-xs-only">
-        <v-btn text v-for="item in horizontalNavItems" :key="item.title" :to="item.link">
-          <v-icon class="hidden-sm-only" left>{{item.icon}}</v-icon>
-          {{item.title}}
-        </v-btn>
-         <!-- Profile Button -->
-        <v-btn text to="/profile" v-if="user">
-          <v-icon class="hidden-sm-only" left>account_box</v-icon>
-          <v-badge right color="blue darken-2">
-            <!-- <span slot="badge"></span> -->
-            Profile
-          </v-badge>
-        </v-btn>
+        <!-- Horizontal Navbar Links -->
+        <v-toolbar-items class="hidden-xs-only">
+          <v-btn text v-for="item in horizontalNavItems" :key="item.title" :to="item.link">
+            <v-icon class="hidden-sm-only" left>{{item.icon}}</v-icon>
+            {{item.title}}
+          </v-btn>
+          <!-- Profile Button -->
+          <v-btn text to="/profile" v-if="user">
+            <v-icon class="hidden-sm-only" left>account_box</v-icon>
+            <v-badge right color="blue darken-2">
+              <!-- <span slot="badge"></span> -->
+              Profile
+            </v-badge>
+          </v-btn>
 
-        <!-- Signout Button -->
-        <v-btn text v-if="user" @click="handleSignoutUser">
-          <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>
-          Signout
-        </v-btn>
-
-      </v-toolbar-items>
-    </v-toolbar>
+          <!-- Signout Button -->
+          <v-btn text v-if="user" @click="handleSignoutUser">
+            <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+    </v-card>
 
     <!-- App Content -->
     <main>
       <v-container class="mt-4">
         <transition name="fade">
-          <router-view/>
+          <router-view />
         </transition>
 
         <!-- Auth Snackbar -->
-        <v-snackbar v-model="authSnackbar" color="success" :timeout='5000' bottom left>
+        <v-snackbar v-model="authSnackbar" color="success" :timeout="5000" bottom left>
           <v-icon class="mr-3">check_circle</v-icon>
           <h3>You are now signed in!</h3>
           <v-btn dark text @click="authSnackbar = false">Close</v-btn>
         </v-snackbar>
         <!-- Auth Error Snackbar -->
-        <v-snackbar v-if="authError" v-model="authErrorSnackbar" color="info" :timeout='5000' bottom left>
+        <v-snackbar
+          v-if="authError"
+          v-model="authErrorSnackbar"
+          color="info"
+          :timeout="5000"
+          bottom
+          left
+        >
           <v-icon class="mr-3">cancel</v-icon>
           <h3>{{authError.message}}</h3>
           <v-btn dark text to="/signin">Sign in</v-btn>
         </v-snackbar>
-
-
       </v-container>
     </main>
   </v-app>
