@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import { gql } from "apollo-boost";
 
 /* Posts Queries */
 export const GET_POSTS = gql`
@@ -100,6 +100,25 @@ export const ADD_POST = gql`
       imageUrl
       categories
       description
+    }
+  }
+`;
+
+export const ADD_POST_MESSAGE = gql`
+  mutation($messageBody: String!, $userId: ID!, $postId: ID!) {
+    addPostMessage(
+      messageBody: $messageBody
+      userId: $userId
+      postId: $postId
+    ) {
+      _id
+      messageBody
+      messageDate
+      messageUser {
+        _id
+        username
+        avatar
+      }
     }
   }
 `;

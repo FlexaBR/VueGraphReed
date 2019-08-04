@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable -->
   <v-container v-if="getPost" class="mt-3" flexbox center>
     <!-- Post Card -->
     <v-layout row wrap>
@@ -14,14 +15,16 @@
             <v-icon @click="goToPreviousPage" color="info" large>arrow_back</v-icon>
           </v-card-title>
 
-
           <v-tooltip right>
             <span>Click to enlarge image</span>
-            <!--eslint-disable-next-line-->
             <template v-slot:activator="{ on }">
-              <v-img @click="toggleImageDialog  " v-on="on" :src="getPost.imageUrl" id="post__image"></v-img>
+              <v-img
+                @click="toggleImageDialog  "
+                v-on="on"
+                :src="getPost.imageUrl"
+                id="post__image"
+              ></v-img>
             </template>
-            
           </v-tooltip>
 
           <!-- Post Image Dialog -->
@@ -46,11 +49,25 @@
       <!-- Message Input -->
       <v-layout class="mb-3" v-if="user">
         <v-flex xs12>
-          <v-form>
+          <v-form
+            v-model="isFormValid"
+            lazy-validation
+            ref="form"
+            @submit.prevent="handleAddPostMessage"
+          >
             <v-layout row>
               <v-flex xs12>
-                <!--eslint-disable-next-line-->
-                <v-text-field clearable append-outer-icon="send" label="Add Message" type="text" prepend-icon="email" required></v-text-field>
+                <v-text-field
+                  :rules="messageRules"
+                  v-model="messageBody"
+                  clearable
+                  :append-outer-icon="messageBody && 'send'"
+                  label="Add Message"
+                  type="text"
+                  @click:append-outer="handleAddPostMessage"
+                  prepend-icon="email"
+                  required
+                ></v-text-field>
               </v-flex>
             </v-layout>
           </v-form>
@@ -68,45 +85,50 @@
 
               <v-list-item inset :key="message.title">
                 <v-list-item-avatar>
-                  <img :src="message.messageUser.avatar">
+                  <img :src="message.messageUser.avatar" />
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                  <v-list-item-title>
-                    {{message.messageBody}}
-                  </v-list-item-title>
-                  <v-list-item-sub-title>
+                  <v-list-item-title>{{message.messageBody}}</v-list-item-title>
+                  <v-list-item-subtitle>
                     {{message.messageUser.username}}
-                    <!--eslint-disable-next-line-->
-                    <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
-                  </v-list-item-sub-title>
+                    <span
+                      class="grey--text text--lighten-1 hidden-xs-only"
+                    >{{message.messageDate}}</span>
+                  </v-list-item-subtitle>
                 </v-list-item-content>
 
-                <v-list-item-action class='hidden-xs-only'>
-                  <v-icon color="grey">chat_bubble</v-icon>
+                <v-list-item-action class="hidden-xs-only">
+                  <v-icon :color="checkIfOwnMessage(message) ? 'accent' : 'grey'">chat_bubble</v-icon>
                 </v-list-item-action>
-
               </v-list-item>
             </template>
           </v-list>
         </v-flex>
       </v-layout>
-
     </div>
-
   </v-container>
 </template>
 
+
 <script>
-import { mapGetters } from 'vuex';
-import { GET_POST } from '../../queries';
+/* eslint-disable */
+import { mapGetters } from "vuex";
+import { GET_POST, ADD_POST_MESSAGE } from "../../queries";
 
 export default {
-  name: 'Post',
-  props: ['postId'],
+  name: "Post",
+  props: ["postId"],
   data() {
     return {
       dialog: false,
+      messageBody: "",
+      isFormValid: true,
+      messageRules: [
+        message => !!message || "Message is required",
+        message =>
+          message.length < 75 || "Message must be less than 75 characters"
+      ]
     };
   },
   apollo: {
@@ -114,15 +136,47 @@ export default {
       query: GET_POST,
       variables() {
         return {
-          postId: this.postId,
+          postId: this.postId
         };
-      },
-    },
+      }
+    }
   },
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(["user"])
   },
   methods: {
+    handleAddPostMessage() {
+      if (this.$refs.form.validate()) {
+        const variables = {
+          messageBody: this.messageBody,
+          userId: this.user._id,
+          postId: this.postId
+        };
+        this.$apollo
+          .mutate({
+            mutation: ADD_POST_MESSAGE,
+            variables,
+            update: (cache, { data: { addPostMessage } }) => {
+              const data = cache.readQuery({
+                query: GET_POST,
+                // eslint-disable-next-line
+                variables: { postId: this.postId }
+              });
+              data.getPost.messages.unshift(addPostMessage);
+              cache.writeQuery({
+                query: GET_POST,
+                variables: { postId: this.postId },
+                data
+              });
+            }
+          })
+          .then(({ data }) => {
+            this.$refs.form.reset();
+            console.log(data.addPostMessage);
+          })
+          .catch(err => console.error(err));
+      }
+    },
     goToPreviousPage() {
       this.$router.go(-1);
     },
@@ -131,7 +185,10 @@ export default {
         this.dialog = !this.dialog;
       }
     },
-  },
+    checkIfOwnMessage(message) {
+      return this.user && this.user._id === message.messageUser._id;
+    }
+  }
 };
 </script>
 
