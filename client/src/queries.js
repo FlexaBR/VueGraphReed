@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { gql } from "apollo-boost";
 
 /* Posts Queries */
@@ -31,6 +32,18 @@ export const GET_POST = gql`
           avatar
         }
       }
+    }
+  }
+`;
+
+export const SEARCH_POSTS = gql`
+  query($searchTerm: String) {
+    searchPosts(searchTerm: $searchTerm) {
+      _id
+      title
+      description
+      imageUrl
+      likes
     }
   }
 `;
