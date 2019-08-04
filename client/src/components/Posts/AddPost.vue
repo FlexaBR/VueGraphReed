@@ -68,50 +68,48 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "AddPost",
+  name: 'AddPost',
   data() {
     return {
       isFormValid: true,
-      title: "",
-      imageUrl: "",
+      title: '',
+      imageUrl: '',
       categories: [],
-      description: "",
+      description: '',
       titleRules: [
-        title => !!title || "Title is required",
-        title => title.length < 20 || "Title must have less than 20 characters"
+        title => !!title || 'Title is required',
+        title => title.length < 20 || 'Title must have less than 20 characters',
       ],
-      imageRules: [image => !!image || "Image is required"],
+      imageRules: [image => !!image || 'Image is required'],
       categoriesRules: [
-        categories =>
-          categories.length >= 1 || "At least one category is required"
+        categories => categories.length >= 1 || 'At least one category is required',
       ],
       descRules: [
-        desc => !!desc || "Description is required",
-        desc =>
-          desc.length < 200 || "Description must have less than 200 characters"
-      ]
+        desc => !!desc || 'Description is required',
+        desc => desc.length < 200 || 'Description must have less than 200 characters',
+      ],
     };
   },
   computed: {
-    ...mapGetters(["loading", "user"])
+    ...mapGetters(['loading', 'user']),
   },
   methods: {
     handleAddPost() {
       if (this.$refs.form.validate()) {
         // add post action
-        this.$store.dispatch("addPost", {
+        this.$store.dispatch('addPost', {
           title: this.title,
           imageUrl: this.imageUrl,
           categories: this.categories,
           description: this.description,
-          creatorId: this.user._id
+          creatorId: this.user._id,
         });
-        this.$router.push("/");
+        this.$router.push('/');
       }
-    }
-  }
+    },
+  },
 };
 </script>

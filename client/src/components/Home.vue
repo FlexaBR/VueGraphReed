@@ -12,7 +12,7 @@
 
     <v-flex xs12>
       <v-carousel v-if="!loading && posts.length > 0" v-bind="{ 'cycle': true }" interval="3000">
-        <v-carousel-item v-for="post in posts" :key="post._id" :src="post.imageUrl">
+        <v-carousel-item v-for="post in posts" :key="post._id" :src="post.imageUrl" @click.native="goToPost(post._id)">
           <h1 id="carousel__title">{{post.title}}</h1>
         </v-carousel-item>
       </v-carousel>
@@ -21,22 +21,25 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "home",
+  name: 'home',
   created() {
     this.handleGetCarouselPosts();
   },
   computed: {
-    ...mapGetters(["loading", "posts"])
+    ...mapGetters(['loading', 'posts']),
   },
   methods: {
     handleGetCarouselPosts() {
       // reach out to Vuex store, fire action that gets posts for carousel
-      this.$store.dispatch("getPosts");
-    }
-  }
+      this.$store.dispatch('getPosts');
+    },
+    goToPost(postId) {
+      this.$router.push(`/posts/${postId}`);
+    },
+  },
 };
 </script>
 

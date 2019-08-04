@@ -108,15 +108,15 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "App",
+  name: 'App',
   data() {
     return {
       sideNav: false,
       authSnackbar: false,
-      authErrorSnackbar: false
+      authErrorSnackbar: false,
     };
   },
   watch: {
@@ -131,45 +131,45 @@ export default {
       if (value !== null) {
         this.authErrorSnackbar = true;
       }
-    }
+    },
   },
   computed: {
-    ...mapGetters(["authError", "user"]),
+    ...mapGetters(['authError', 'user']),
     horizontalNavItems() {
       let items = [
-        { icon: "chat", title: "Posts", link: "/posts" },
-        { icon: "lock_open", title: "Sign In", link: "/signin" },
-        { icon: "create", title: "Sign Up", link: "/signup" }
+        { icon: 'chat', title: 'Posts', link: '/posts' },
+        { icon: 'lock_open', title: 'Sign In', link: '/signin' },
+        { icon: 'create', title: 'Sign Up', link: '/signup' },
       ];
       if (this.user) {
-        items = [{ icon: "chat", title: "Posts", link: "/posts" }];
+        items = [{ icon: 'chat', title: 'Posts', link: '/posts' }];
       }
       return items;
     },
     sideNavItems() {
       let items = [
-        { icon: "chat", title: "Posts", link: "/posts" },
-        { icon: "lock_open", title: "Sign In", link: "/signin" },
-        { icon: "create", title: "Sign Up", link: "/signup" }
+        { icon: 'chat', title: 'Posts', link: '/posts' },
+        { icon: 'lock_open', title: 'Sign In', link: '/signin' },
+        { icon: 'create', title: 'Sign Up', link: '/signup' },
       ];
       if (this.user) {
         items = [
-          { icon: "chat", title: "Posts", link: "/posts" },
-          { icon: "stars", title: "Create Post", link: "/post/add" },
-          { icon: "account_box", title: "Profile", link: "/profile" }
+          { icon: 'chat', title: 'Posts', link: '/posts' },
+          { icon: 'stars', title: 'Create Post', link: '/post/add' },
+          { icon: 'account_box', title: 'Profile', link: '/profile' },
         ];
       }
       return items;
-    }
+    },
   },
   methods: {
     handleSignoutUser() {
-      this.$store.dispatch("signoutUser");
+      this.$store.dispatch('signoutUser');
     },
     toggleSideNav() {
       this.sideNav = !this.sideNav;
-    }
-  }
+    },
+  },
 };
 </script>
 

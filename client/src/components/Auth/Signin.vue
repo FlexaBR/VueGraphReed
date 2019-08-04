@@ -24,7 +24,8 @@
 
               <v-layout row>
                 <v-flex xs12>
-                  <v-text-field :rules="usernameRules" v-model="username" prepend-icon="face" label="Username" type="text" required></v-text-field>
+                  <v-text-field :rules="usernameRules" v-model="username"
+                    prepend-icon="face" label="Username" type="text" required></v-text-field>
                 </v-flex>
               </v-layout>
 
@@ -57,51 +58,49 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "Signin",
+  name: 'Signin',
   data() {
     return {
       isFormValid: true,
-      username: "",
-      password: "",
+      username: '',
+      password: '',
       usernameRules: [
         // Check if username in input
-        username => !!username || "Username is required",
+        username => !!username || 'Username is required',
         // Make sure username is less than 10 characters
-        username =>
-          username.length < 10 || "Username must be less than 10 characters"
+        username => username.length < 10 || 'Username must be less than 10 characters',
       ],
       passwordRules: [
-        password => !!password || "Password is required",
+        password => !!password || 'Password is required',
         // Make sure password is at least 7 characters
-        password =>
-          password.length >= 4 || "Password must be at least 4 characters"
-      ]
+        password => password.length >= 4 || 'Password must be at least 4 characters',
+      ],
     };
   },
   computed: {
-    ...mapGetters(["loading", "error", "user"])
+    ...mapGetters(['loading', 'error', 'user']),
   },
   watch: {
     user(value) {
       // if user value changes, redirect to home page
       if (value) {
-        this.$router.push("/");
+        this.$router.push('/');
       }
-    }
+    },
   },
   methods: {
     handleSigninUser() {
       if (this.$refs.form.validate()) {
-        this.$store.dispatch("signinUser", {
+        this.$store.dispatch('signinUser', {
           username: this.username,
-          password: this.password
+          password: this.password,
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

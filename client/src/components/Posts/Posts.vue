@@ -1,10 +1,12 @@
 <template>
   <v-container fluid grid-list-xl>
+
     <!-- Post Cards -->
     <v-layout row wrap v-if="infiniteScrollPosts">
       <v-flex xs12 sm6 v-for="post in infiniteScrollPosts.posts" :key="post._id">
         <v-card hover>
-          <v-img :src="post.imageUrl" height="30vh" lazy></v-img>
+          <v-img @click.native="goToPost(post._id)" :src="post.imageUrl" height="30vh" lazy></v-img>
+
           <v-card-actions>
             <v-card-title primary>
               <div>
@@ -53,22 +55,21 @@
       </v-flex>
     </v-layout>
 
-    
   </v-container>
 </template>
 
 <script>
-import { INFINITE_SCROLL_POSTS } from "../../queries";
+import { INFINITE_SCROLL_POSTS } from '../../queries';
 
 const pageSize = 2;
 
 export default {
-  name: "Posts",
+  name: 'Posts',
   data() {
     return {
       pageNum: 1,
       showMoreEnabled: true,
-      showPostCreator: false
+      showPostCreator: false,
     };
   },
   apollo: {
@@ -76,11 +77,14 @@ export default {
       query: INFINITE_SCROLL_POSTS,
       variables: {
         pageNum: 1,
-        pageSize
-      }
-    }
+        pageSize,
+      },
+    },
   },
   methods: {
+    goToPost(postId) {
+      this.$router.push(`/posts/${postId}`);
+    },
     showMorePosts() {
       this.pageNum += 1;
       // fetch more data and transform original result
@@ -88,14 +92,14 @@ export default {
         variables: {
           // pageNum incremented by 1
           pageNum: this.pageNum,
-          pageSize
+          pageSize,
         },
         updateQuery: (prevResult, { fetchMoreResult }) => {
-          console.log("previous result", prevResult.infiniteScrollPosts.posts);
-          console.log("fetch more result", fetchMoreResult);
+          console.log('previous result', prevResult.infiniteScrollPosts.posts);
+          console.log('fetch more result', fetchMoreResult);
 
           const newPosts = fetchMoreResult.infiniteScrollPosts.posts;
-          const hasMore = fetchMoreResult.infiniteScrollPosts.hasMore;
+          const { hasMore } = fetchMoreResult.infiniteScrollPosts;
           this.showMoreEnabled = hasMore;
 
           return {
@@ -103,12 +107,12 @@ export default {
               __typename: prevResult.infiniteScrollPosts.__typename,
               // Merge previous posts with new posts
               posts: [...prevResult.infiniteScrollPosts.posts, ...newPosts],
-              hasMore
-            }
-          }
-        }
-      })
-    }
-  }
+              hasMore,
+            },
+          };
+        },
+      });
+    },
+  },
 };
 </script>
