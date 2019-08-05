@@ -1,4 +1,5 @@
 <template>
+<!-- eslint-disable -->
   <v-container text-xs-center mt-5 pt-5>
 
     <!-- Add Post Title -->
@@ -68,6 +69,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { mapGetters } from 'vuex';
 
 export default {

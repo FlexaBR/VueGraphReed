@@ -1,6 +1,6 @@
 <template>
+<!-- eslint-disable -->
   <v-container fluid grid-list-xl>
-
     <!-- Post Cards -->
     <v-layout row wrap v-if="infiniteScrollPosts">
       <v-flex xs12 sm6 v-for="post in infiniteScrollPosts.posts" :key="post._id">
@@ -26,11 +26,11 @@
               <v-list>
                 <v-list-item>
                   <v-list-item-avatar>
-                    <v-img :src="post.createdBy.avatar"></v-img>
+                    <img :src="post.createdBy.avatar">
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title class="text--primary">{{post.createdBy.username}}</v-list-item-title>
-                    <v-list-item-subtitle class="font-weight-thin">Added {{post.createdDate}}</v-list-item-subtitle>
+                    <v-list-item-subtitle class="font-weight-thin">Added {{formatCreatedDate(post.createdDate)}}</v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-btn icon ripple>
@@ -41,7 +41,6 @@
               </v-list>
             </v-card-text>
           </v-expand-transition>
-
         </v-card>
       </v-flex>
     </v-layout>
@@ -54,22 +53,23 @@
         </v-layout>
       </v-flex>
     </v-layout>
-
   </v-container>
 </template>
 
 <script>
-import { INFINITE_SCROLL_POSTS } from '../../queries';
+/* eslint-disable */
+import moment from "moment";
+import { INFINITE_SCROLL_POSTS } from "../../queries";
 
 const pageSize = 2;
 
 export default {
-  name: 'Posts',
+  name: "Posts",
   data() {
     return {
       pageNum: 1,
       showMoreEnabled: true,
-      showPostCreator: false,
+      showPostCreator: false
     };
   },
   apollo: {
@@ -77,13 +77,16 @@ export default {
       query: INFINITE_SCROLL_POSTS,
       variables: {
         pageNum: 1,
-        pageSize,
-      },
-    },
+        pageSize
+      }
+    }
   },
   methods: {
     goToPost(postId) {
       this.$router.push(`/posts/${postId}`);
+    },
+    formatCreatedDate(date) {
+      return moment(new Date(date)).format("ll");
     },
     showMorePosts() {
       this.pageNum += 1;
@@ -92,14 +95,14 @@ export default {
         variables: {
           // pageNum incremented by 1
           pageNum: this.pageNum,
-          pageSize,
+          pageSize
         },
         updateQuery: (prevResult, { fetchMoreResult }) => {
-          console.log('previous result', prevResult.infiniteScrollPosts.posts);
-          console.log('fetch more result', fetchMoreResult);
+          console.log("previous result", prevResult.infiniteScrollPosts.posts);
+          console.log("fetch more result", fetchMoreResult);
 
           const newPosts = fetchMoreResult.infiniteScrollPosts.posts;
-          const { hasMore } = fetchMoreResult.infiniteScrollPosts;
+          const hasMore = fetchMoreResult.infiniteScrollPosts.hasMore;
           this.showMoreEnabled = hasMore;
 
           return {
@@ -107,12 +110,12 @@ export default {
               __typename: prevResult.infiniteScrollPosts.__typename,
               // Merge previous posts with new posts
               posts: [...prevResult.infiniteScrollPosts.posts, ...newPosts],
-              hasMore,
-            },
+              hasMore
+            }
           };
-        },
+        }
       });
-    },
-  },
+    }
+  }
 };
 </script>
